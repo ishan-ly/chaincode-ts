@@ -8,4 +8,4 @@ import { ContractLedgerContract } from './contractLedger';
 export {ContractLedgerContract} from './contractLedger';
 export {TransactionLedgerContract} from './transactionLedger'
 
-//export const contracts: any[] = [...ContractLedgerContract, ...TransactionLedgerContract];
+export const contracts: any[] = [ContractLedgerContract, TransactionLedgerContract];

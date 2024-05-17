@@ -1,7 +1,7 @@
 {
-  "name": "asset-transfer-basic",
+  "name": "loyyal-chaincode",
   "version": "1.0.0",
-  "description": "Asset Transfer Basic contract implemented in TypeScript",
+  "description": " TypeScript",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "engines": {
@@ -23,7 +23,7 @@
     "start:server": "set -x && fabric-chaincode-node server --chaincode-address=$CHAINCODE_SERVER_ADDRESS --chaincode-id=$CHAINCODE_ID --chaincode-tls-key-file=/hyperledger/privatekey.pem --chaincode-tls-client-cacert-file=/hyperledger/rootcert.pem --chaincode-tls-cert-file=/hyperledger/cert.pem"
   },
   "engineStrict": true,
-  "author": "Hyperledger",
+  "author": "Ishan Agrawal  ",
   "license": "Apache-2.0",
   "dependencies": {
     "fabric-contract-api": "^2.5.4",
