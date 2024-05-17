@@ -24,16 +24,9 @@ export class ContractLedgerContract extends Contract {
         const size = parsedContracts.length;
         const suffix = size+1;
 
-        // const exists = await this.ContractExists(ctx, identifier);
-        // if (exists) {
-        //     throw new Error(`The asset ${identifier} already exists`);
-        // }
-        // logic to get length of no of contracts (program and merchant) and append it in identifier
-
-
         const contract = {
             docType : 'contract',
-            identifier: `${contractDetails.programId}/${contractDetails.merchantId}/${(new Date()).getFullYear()}/${suffix}`,//identifier, //generate random as per above logic
+            identifier: `${contractDetails.programId}/${contractDetails.merchantId}/${(new Date()).getFullYear()}/${suffix}`,
             programId : contractDetails.programId,
             merchantId: contractDetails.merchantId,
             cpp: contractDetails.cpp,
@@ -46,17 +39,17 @@ export class ContractLedgerContract extends Contract {
         return contract;
     }   
 
-    // ReadAsset returns the asset stored in the world state with given identifier.
+    // ReadContract returns the contract stored in the world state with given identifier.
     @Transaction(false)
     public async ReadContract(ctx: Context, identifier: string): Promise<string> {
-        const contractJSON = await ctx.stub.getState(identifier); // get the asset from chaincode state
+        const contractJSON = await ctx.stub.getState(identifier); // get the contract from chaincode state
         if (!contractJSON || contractJSON.length === 0) {
             throw new Error(`The contract ${identifier} does not exist`);
         }
         return contractJSON.toString();
     }
 
-    // AssetExists returns true when asset with given identifier exists in world state.
+    // COntractExists returns true when contract with given identifier exists in world state.
     @Transaction(false)
     @Returns('boolean')
     public async ContractExists(ctx: Context, identifier: string): Promise<boolean> {
@@ -69,7 +62,7 @@ export class ContractLedgerContract extends Contract {
     @Returns('string')
     public async GetAllContracts(ctx: Context): Promise<string> {
         const allResults = [];
-        // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
+        // range query with empty string for startKey and endKey does an open-ended query of all contracts in the chaincode namespace.
         const iterator = await ctx.stub.getStateByRange('', '');
         let result = await iterator.next();
         while (!result.done) {
@@ -128,10 +121,6 @@ export class ContractLedgerContract extends Contract {
 		return JSON.stringify(results);
 	}
 
-    // This is JavaScript so without Funcation Decorators, all functions are assumed
-	// to be transaction functions
-	//
-	// For internal functions... prefix them with _
     @Transaction(false)
     @Returns('array')
 	async _GetAllResults(iterator, isHistory : boolean) {
@@ -167,7 +156,7 @@ export class ContractLedgerContract extends Contract {
 		return allResults;
 	}
 
-    // GetAssetHistory returns the chain of custody for an asset since issuance.
+    // GetContractHistory returns the chain of custody for an contract since issuance.
     @Transaction(false)
     @Returns('string')
 	async GetContractHistory(ctx : Context, contractName) {

@@ -25,7 +25,7 @@ export class MemberTransaction {
     public merchantId: number;
 
     @Property()
-    public MerchantStoreId: number;
+    public merchantStoreId: number;
 
     @Property()
     public location: string;
@@ -35,4 +35,10 @@ export class MemberTransaction {
 
     @Property()
     public currency: string;
+
+    @Property()
+    public status: string; //['INITIALIZED','ACCURED','FAILED']
+
+    @Property()
+    public currencyToUsdRate : number;
 }
