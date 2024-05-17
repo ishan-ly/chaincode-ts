@@ -12,7 +12,7 @@ export class ContractLedgerContract extends Contract {
 
     // CreateContract issues a new contract to the world state with given details.
     @Transaction()
-    public async CreateContract(ctx: Context, contractDetails : SmartContract): Promise<SmartContract> {
+    public async CreateContract(ctx: Context, contractDetails : any): Promise<SmartContract> {
         if(!contractDetails.programId) throw new Error("programId is required");
         if(!contractDetails.merchantId) throw new Error("merchantId is required");
         if(!contractDetails.cpp) throw new Error("cpp is required");
@@ -21,7 +21,7 @@ export class ContractLedgerContract extends Contract {
 
         const contracts = await this.QueryContractsByProgramAndMerchant(ctx, contractDetails.programId, contractDetails.merchantId);
         const parsedContracts = JSON.parse(contracts);
-        const size = parsedContracts.length;
+        const size = parsedContracts.length || 0; 
         const suffix = size+1;
 
         const contract = {
@@ -86,7 +86,7 @@ export class ContractLedgerContract extends Contract {
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
     @Transaction(false)
-	async QueryContractsByMerchant(ctx : Context, merchantId : number) {
+	public async QueryContractsByMerchant(ctx : Context, merchantId : number) {
 		let queryString : any;
 		queryString.selector.docType = 'contract';
 		queryString.selector.merchantId = merchantId;
@@ -94,7 +94,7 @@ export class ContractLedgerContract extends Contract {
 	}
 
     @Transaction(false)
-	async QueryContractsByProgramAndMerchant(ctx : Context, programId : number, merchantId : number) {
+	public async QueryContractsByProgramAndMerchant(ctx : Context, programId : number, merchantId : number) {
 		let queryString : any;
 		queryString.selector.docType = 'contract';
         queryString.selector.programId = programId;
@@ -103,7 +103,7 @@ export class ContractLedgerContract extends Contract {
 	}
 
     @Transaction(false)
-    async QueryContractsByProgram(ctx : Context, programID : number) {
+    public async QueryContractsByProgram(ctx : Context, programID : number) {
 		let queryString : any;
 		queryString.selector.docType = 'contract';
 		queryString.selector.ProgramID = programID;

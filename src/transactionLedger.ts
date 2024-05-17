@@ -133,7 +133,7 @@ export class TransactionLedgerContract extends Contract {
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
     @Transaction(false)
-	async QueryTransactionsByMerchant(ctx : Context, merchantID : number) {
+	public async QueryTransactionsByMerchant(ctx : Context, merchantID : number) {
 		let queryString : any;
 		queryString.selector.docType = 'transaction';
 		queryString.selector.MerchantID = merchantID;
@@ -141,7 +141,7 @@ export class TransactionLedgerContract extends Contract {
 	}
 
     @Transaction(false)
-    async QueryTransactionsByMember(ctx : Context, memberId : string) {
+    public async QueryTransactionsByMember(ctx : Context, memberId : string) {
 		let queryString : any;
 		queryString.selector.docType = 'transaction';
 		queryString.selector.memberId = memberId;
@@ -149,7 +149,7 @@ export class TransactionLedgerContract extends Contract {
 	}
 
     @Transaction(false)
-	async QueryTransactionsByProgram(ctx : Context, programId : number) {
+	public async QueryTransactionsByProgram(ctx : Context, programId : number) {
 		let queryString : any;
 		queryString.selector.docType = 'transaction';
         queryString.selector.programId = programId;
@@ -157,7 +157,7 @@ export class TransactionLedgerContract extends Contract {
 	}
 
     @Transaction(false)
-	async QueryTransactionsByMerchantStore(ctx : Context, merchantStoreId : number) {
+	public async QueryTransactionsByMerchantStore(ctx : Context, merchantStoreId : number) {
 		let queryString : any;
 		queryString.selector.docType = 'transaction';
         queryString.selector.merchantStoreId = merchantStoreId;
