@@ -9,35 +9,35 @@ import {SmartContract} from './contract';
 import { CommonUtils } from './utils/CommonUtils';
 import { InvalidInputError } from './errors/InvalidInputError';
 import { CustomError } from './errors/CustomError';
-
+import { ContractDetails } from './interface/ContractDetails';
 @Info({title: 'ContractLedger', description: 'Smart contract for contract between program and partner'})
 export class ContractLedgerContract extends Contract {
 
     // CreateContract issues a new contract to the world state with given details.
     @Transaction()
-    public async CreateContract(ctx: Context, contractDetails : any): Promise<SmartContract> {
+    public async CreateContract(ctx: Context, contractDetails : string) {
         try {
-            contractDetails = JSON.parse(contractDetails);
-            if(!contractDetails.programId) throw new InvalidInputError("programId is required");
-            if(!contractDetails.merchantId) throw new InvalidInputError("merchantId is required");
-            if(!contractDetails.cpp) throw new InvalidInputError("cpp is required");
-            if(!contractDetails.validFrom) throw new InvalidInputError("validFrom is required");
-            if(!contractDetails.validUpto) throw new InvalidInputError("validUpto is required");
+            const parsedDetails : ContractDetails = JSON.parse(contractDetails);
+            if(!parsedDetails.programId) throw new InvalidInputError("programId is required");
+            if(!parsedDetails.merchantId) throw new InvalidInputError("merchantId is required");
+            if(!parsedDetails.cpp) throw new InvalidInputError("cpp is required");
+            if(!parsedDetails.validFrom) throw new InvalidInputError("validFrom is required");
+            if(!parsedDetails.validUpto) throw new InvalidInputError("validUpto is required");
     
-            const contracts = await this.QueryContractsByProgramAndMerchant(ctx, contractDetails.programId, contractDetails.merchantId);
+            const contracts = await this.QueryContractsByProgramAndMerchant(ctx, parsedDetails.programId, parsedDetails.merchantId);
             const parsedContracts = JSON.parse(contracts);
             const size = parsedContracts.length || 0; 
             const suffix = size+1;
     
             const contract = {
                 docType : 'contract',
-                identifier: `${contractDetails.programId}/${contractDetails.merchantId}/${(new Date()).getFullYear()}/${suffix}`,
-                programId : contractDetails.programId,
-                merchantId: contractDetails.merchantId,
-                cpp: contractDetails.cpp,
-                contractType: contractDetails.contractType || 'default',
-                validFrom: contractDetails.validFrom,
-                validUpto: contractDetails.validUpto 
+                identifier: `${parsedDetails.programId}/${parsedDetails.merchantId}/${(new Date()).getFullYear()}/${suffix}`,
+                programId : parsedDetails.programId,
+                merchantId: parsedDetails.merchantId,
+                cpp: parsedDetails.cpp,
+                contractType: parsedDetails.contractType || 'default',
+                validFrom: parsedDetails.validFrom,
+                validUpto: parsedDetails.validUpto 
             };
             // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
             await ctx.stub.putState(contract.identifier, Buffer.from(stringify(sortKeysRecursive(contract))));

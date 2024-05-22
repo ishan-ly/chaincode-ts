@@ -2,14 +2,12 @@ import {Context, Contract, Info, Returns, Transaction} from 'fabric-contract-api
 import { CustomResponse } from "../models/CustomResponse";
 
 export class CommonUtils {
-    @Transaction(false)
-    @Returns('array')
-	static async _GetAllResults(iterator, isHistory : boolean) {
-		let allResults = [];
+	static async _GetAllResults(iterator: any, isHistory: boolean): Promise<any[]> {
+		let allResults: any[] = [];
 		let res = await iterator.next();
 		while (!res.done) {
 			if (res.value && res.value.value.toString()) {
-				let jsonRes : any;
+				let jsonRes: any = {};  // Ensure jsonRes is initialized as an object
 				console.log(res.value.value.toString('utf8'));
 				if (isHistory && isHistory === true) {
 					jsonRes.TxId = res.value.txId;
@@ -33,13 +31,13 @@ export class CommonUtils {
 			}
 			res = await iterator.next();
 		}
-		iterator.close();
+		await iterator.close();  // Ensure the iterator is properly closed
 		return allResults;
 	}
+	
 
     // GetQueryResultForQueryString executes the passed in query string.
 	// Result set is built and returned as a byte array containing the JSON results.
-    @Transaction(false)
 	static async GetQueryResultForQueryString(ctx : Context, queryString : any) {
 
 		let resultsIterator = await ctx.stub.getQueryResult(queryString);
@@ -49,8 +47,6 @@ export class CommonUtils {
 	}
 
     // GetContractHistory returns the chain of custody for an contract since issuance.
-    @Transaction(false)
-    @Returns('string')
 	static async GetHistoryForKey(ctx : Context, key) {
 		let resultsIterator = await ctx.stub.getHistoryForKey(key);
 		let results = await this._GetAllResults(resultsIterator, true);
@@ -58,8 +54,6 @@ export class CommonUtils {
 	}
 
     // GetAllData returns all data found in the world state for the particular docType.
-    @Transaction(false)
-    @Returns('string')
     static async GetAllData(ctx: Context, type : string): Promise<string> {
         let queryString : any;
 		queryString.selector.docType = type;
