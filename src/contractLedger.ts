@@ -14,7 +14,6 @@ import { ContractDetails } from './interface/ContractDetails';
 export class ContractLedgerContract extends Contract {
 
     // CreateContract issues a new contract to the world state with given details.
-    @Transaction()
     public async CreateContract(ctx: Context, contractDetails : string) {
         try {
             const parsedDetails : ContractDetails = JSON.parse(contractDetails);
@@ -48,7 +47,6 @@ export class ContractLedgerContract extends Contract {
     }   
 
     // ReadContract returns the contract stored in the world state with given identifier.
-    @Transaction(false)
     public async ReadContract(ctx: Context, identifier: string): Promise<string> {
         try {
             const contractJSON = await ctx.stub.getState(identifier); // get the contract from chaincode state
@@ -62,8 +60,6 @@ export class ContractLedgerContract extends Contract {
     }
 
     // COntractExists returns true when contract with given identifier exists in world state.
-    @Transaction(false)
-    @Returns('boolean')
     public async ContractExists(ctx: Context, identifier: string): Promise<boolean> {
         try {
             const assetJSON = await ctx.stub.getState(identifier);
@@ -74,8 +70,6 @@ export class ContractLedgerContract extends Contract {
     }
 
     // GetAllContracts returns all contracts found in the world state.
-    @Transaction(false)
-    @Returns('string')
     public async GetAllContracts(ctx: Context, type : string): Promise<string> {
 		try {
             return await CommonUtils.GetAllData(ctx, type); //shim.success(queryResults);
@@ -89,7 +83,6 @@ export class ContractLedgerContract extends Contract {
 	// and accepting a single query parameter (merchantID).
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
-    @Transaction(false)
 	public async QueryContractsByMerchant(ctx : Context, merchantId : number) {
 		try {
             let queryString : any;
@@ -101,7 +94,6 @@ export class ContractLedgerContract extends Contract {
         };
 	}
 
-    @Transaction(false)
 	public async QueryContractsByProgramAndMerchant(ctx : Context, programId : number, merchantId : number) {
 		try {
             let queryString : any;
@@ -114,7 +106,6 @@ export class ContractLedgerContract extends Contract {
         }
 	}
 
-    @Transaction(false)
     public async QueryContractsByProgram(ctx : Context, programID : number) {
 		try {
             let queryString : any;
@@ -127,8 +118,6 @@ export class ContractLedgerContract extends Contract {
 	}
 
     // GetContractHistory returns the chain of custody for an contract since issuance.
-    @Transaction(false)
-    @Returns('string')
 	async GetContractHistory(ctx : Context, contractName) {
         try {
             return await CommonUtils.GetHistoryForKey(ctx, contractName);

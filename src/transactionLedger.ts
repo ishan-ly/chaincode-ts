@@ -15,7 +15,6 @@ import { CustomError } from './errors/CustomError';
 export class TransactionLedgerContract extends Contract {
 
     // CreateTransaction issues a new transaction to the world state with given details.
-    @Transaction()
     public async CreateTransaction(ctx: Context, transactionDetails : any): Promise<MemberTransaction> {
         try {
             transactionDetails = JSON.parse(transactionDetails);
@@ -70,7 +69,6 @@ export class TransactionLedgerContract extends Contract {
     }
 
     //UPDATE STATUS FUNCTION -> CHANGE TO ACCURED OR FAILED
-    @Transaction()
     public async UpdateStatus(ctx: Context, identifier : string, status : string) : Promise<MemberTransaction> {
         try {
             // Get the ledger state for the transaction
@@ -96,7 +94,6 @@ export class TransactionLedgerContract extends Contract {
     }
 
     // ReadTransaction returns the transaction stored in the world state with given id.
-    @Transaction(false)
     public async ReadTransaction(ctx: Context, id: string): Promise<string> {
         try {
             const transactionJSON = await ctx.stub.getState(id); // get the transaction from chaincode state
@@ -110,8 +107,6 @@ export class TransactionLedgerContract extends Contract {
     }
 
     // TransactionExists returns true when transaction with given ID exists in world state.
-    @Transaction(false)
-    @Returns('boolean')
     public async TransactionExists(ctx: Context, id: string): Promise<boolean> {
         try {
             const assetJSON = await ctx.stub.getState(id);
@@ -122,8 +117,6 @@ export class TransactionLedgerContract extends Contract {
     }
 
     // GetAllContracts returns all contracts found in the world state.
-    @Transaction(false)
-    @Returns('string')
     public async GetAllTransactions(ctx: Context, type: string): Promise<string> {
 		try {
             return await CommonUtils.GetAllData(ctx, type); //shim.success(queryResults);
@@ -137,7 +130,6 @@ export class TransactionLedgerContract extends Contract {
 	// and accepting a single query parameter (merchantID).
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
-    @Transaction(false)
 	public async QueryTransactionsByMerchant(ctx : Context, merchantID : number) {
 		try {
             let queryString : any;
@@ -149,7 +141,6 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-    @Transaction(false)
     public async QueryTransactionsByMember(ctx : Context, memberId : string) {
 		try {
             let queryString : any;
@@ -161,7 +152,6 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-    @Transaction(false)
 	public async QueryTransactionsByProgram(ctx : Context, programId : number) {
 		try {
             let queryString : any;
@@ -173,7 +163,6 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-    @Transaction(false)
 	public async QueryTransactionsByMerchantStore(ctx : Context, merchantStoreId : number) {
 		try {
             let queryString : any;
@@ -186,8 +175,6 @@ export class TransactionLedgerContract extends Contract {
 	}
 
     // GetTransactionHistory returns the chain of custody for an transaction since issuance.
-    @Transaction(false)
-    @Returns('string')
 	async GetTransactionHistory(ctx : Context, transactionName) {
        try {
             return await CommonUtils.GetHistoryForKey(ctx, transactionName);
