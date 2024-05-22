@@ -130,11 +130,14 @@ export class TransactionLedgerContract extends Contract {
 	// and accepting a single query parameter (merchantID).
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
-	public async QueryTransactionsByMerchant(ctx : Context, merchantID : number) {
+	public async QueryTransactionsByMerchant(ctx : Context, merchantId : number) {
 		try {
-            let queryString : any;
-            queryString.selector.docType = 'transaction';
-            queryString.selector.MerchantID = merchantID;
+            let queryString: any = {
+                selector: {
+                    docType: 'transaction',
+                    merchantId: merchantId
+                }
+            };
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
@@ -143,9 +146,12 @@ export class TransactionLedgerContract extends Contract {
 
     public async QueryTransactionsByMember(ctx : Context, memberId : string) {
 		try {
-            let queryString : any;
-            queryString.selector.docType = 'transaction';
-            queryString.selector.memberId = memberId;
+            let queryString: any = {
+                selector: {
+                    docType: 'transaction',
+                    memberId: memberId
+                }
+            };
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
@@ -154,9 +160,12 @@ export class TransactionLedgerContract extends Contract {
 
 	public async QueryTransactionsByProgram(ctx : Context, programId : number) {
 		try {
-            let queryString : any;
-            queryString.selector.docType = 'transaction';
-            queryString.selector.programId = programId;
+            let queryString: any = {
+                selector: {
+                    docType: 'transaction',
+                    programId: programId
+                }
+            };
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
@@ -165,9 +174,12 @@ export class TransactionLedgerContract extends Contract {
 
 	public async QueryTransactionsByMerchantStore(ctx : Context, merchantStoreId : number) {
 		try {
-            let queryString : any;
-            queryString.selector.docType = 'transaction';
-            queryString.selector.merchantStoreId = merchantStoreId;
+            let queryString: any = {
+                selector: {
+                    docType: 'transaction',
+                    merchantStoreId: merchantStoreId
+                }
+            };
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);

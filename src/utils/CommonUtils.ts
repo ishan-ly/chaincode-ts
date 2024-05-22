@@ -55,8 +55,11 @@ export class CommonUtils {
 
     // GetAllData returns all data found in the world state for the particular docType.
     static async GetAllData(ctx: Context, type : string): Promise<string> {
-        let queryString : any;
-		queryString.selector.docType = type;
+		let queryString: any = {
+            selector: {
+                docType: type,
+            }
+        };
 		return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
     }
 

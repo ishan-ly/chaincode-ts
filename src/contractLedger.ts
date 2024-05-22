@@ -85,9 +85,12 @@ export class ContractLedgerContract extends Contract {
 	// Example: Parameterized rich query
 	public async QueryContractsByMerchant(ctx : Context, merchantId : number) {
 		try {
-            let queryString : any;
-            queryString.selector.docType = 'contract';
-            queryString.selector.merchantId = merchantId;
+            let queryString: any = {
+                selector: {
+                    docType: 'contract',
+                    merchantId: merchantId
+                }
+            };
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults)
         } catch (error) {
             console.log(error);
@@ -96,21 +99,26 @@ export class ContractLedgerContract extends Contract {
 
 	public async QueryContractsByProgramAndMerchant(ctx : Context, programId : number, merchantId : number) {
 		try {
-            let queryString : any;
-            queryString.selector.docType = 'contract';
-            queryString.selector.programId = programId;
-            queryString.selector.merchantId = merchantId;
+            let queryString: any = {
+                selector: {
+                    docType: 'contract',
+                    programId: programId,
+                    merchantId: merchantId
+                }
+            };
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
         }
 	}
 
-    public async QueryContractsByProgram(ctx : Context, programID : number) {
+    public async QueryContractsByProgram(ctx : Context, programId : number) {
 		try {
-            let queryString : any;
-            queryString.selector.docType = 'contract';
-            queryString.selector.ProgramID = programID;
+            let queryString: any = {
+                selector: {
+                    docType: 'contract',
+                    programId: programId                }
+            };
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
