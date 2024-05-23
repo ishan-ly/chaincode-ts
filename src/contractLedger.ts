@@ -35,8 +35,8 @@ export class ContractLedgerContract extends Contract {
                 merchantId: parsedDetails.merchantId,
                 cpp: parsedDetails.cpp,
                 contractType: parsedDetails.contractType || 'default',
-                validFrom: parsedDetails.validFrom,
-                validUpto: parsedDetails.validUpto 
+                validFrom: new Date(parsedDetails.validFrom),
+                validUpto: new Date (parsedDetails.validUpto) 
             };
             // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
             await ctx.stub.putState(contract.identifier, Buffer.from(stringify(sortKeysRecursive(contract))));
