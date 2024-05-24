@@ -39,12 +39,21 @@ export class TransactionLedgerContract extends Contract {
             
             if(!contracts) throw new CustomError(`NO contract between program ${parsedDetails.programId} and merchant ${parsedDetails.merchantId} exists`);
             const parsedContracts = JSON.parse(contracts);
+            console.log('parsed contracts are ',parsedContracts);
+
             const cpp = parsedContracts[0].cpp;
+            console.log('cpp is ',cpp);
 
             if(cpp === 0) throw new CustomError("cpp cannot be 0");
+            console.log('parsedDetails.amount ', parsedDetails.amount);
+
+            console.log('parsedDetails.currencyToUsdRate ', parsedDetails.currencyToUsdRate)
             const interimAmount = parsedDetails.amount * parsedDetails.currencyToUsdRate;
+            console.log('interimAmount is ', interimAmount)
+
             const pointToBeIncurred = interimAmount/cpp;
-    
+            console.log('pointToBeIncurred is ', pointToBeIncurred);
+
             const transaction = {
                 docType : 'transaction',
                 identifier : parsedDetails.identifier, 
