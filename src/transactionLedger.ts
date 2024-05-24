@@ -41,7 +41,7 @@ export class TransactionLedgerContract extends Contract {
             const parsedContracts = JSON.parse(contracts);
             console.log('parsed contracts are ',parsedContracts);
 
-            const cpp = parsedContracts[0].cpp;
+            const cpp = parsedContracts[0].Record.cpp;
             console.log('cpp is ',cpp);
 
             if(cpp === 0) throw new CustomError("cpp cannot be 0");
