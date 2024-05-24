@@ -15,7 +15,7 @@ import { CustomError } from './errors/CustomError';
 export class TransactionLedgerContract extends Contract {
 
     // CreateTransaction issues a new transaction to the world state with given details.
-    public async CreateTransaction(ctx: Context, transactionDetails : any): Promise<MemberTransaction> {
+    public async CreateTransaction(ctx: Context, transactionDetails : any): Promise<string> {
         try {
             transactionDetails = JSON.parse(transactionDetails);
             if(!transactionDetails.identifier) throw new InvalidInputError("identifier is required");
@@ -62,14 +62,14 @@ export class TransactionLedgerContract extends Contract {
             };
             // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
             await ctx.stub.putState(transaction.identifier, Buffer.from(stringify(sortKeysRecursive(transaction))));
-            return transaction;
+            return JSON.stringify(transaction);
         } catch (error) {
             console.log(error);
         }
     }
 
     //UPDATE STATUS FUNCTION -> CHANGE TO ACCURED OR FAILED
-    public async UpdateStatus(ctx: Context, identifier : string, status : string) : Promise<MemberTransaction> {
+    public async UpdateStatus(ctx: Context, identifier : string, status : string) : Promise<string> {
         try {
             // Get the ledger state for the transaction
             const transactionBytes = await ctx.stub.getState(identifier);
@@ -87,7 +87,7 @@ export class TransactionLedgerContract extends Contract {
             await ctx.stub.putState(identifier, Buffer.from(stringify(sortKeysRecursive(transaction))));
     
             // Return the updated transaction
-            return transaction;
+            return JSON.stringify(transaction);
         } catch (error) {
             console.log(error);
         }
@@ -130,7 +130,7 @@ export class TransactionLedgerContract extends Contract {
 	// and accepting a single query parameter (merchantID).
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
-	public async QueryTransactionsByMerchant(ctx : Context, merchantId : number) {
+	public async QueryTransactionsByMerchant(ctx : Context, merchantId : number) : Promise<string> {
 		try {
             let queryString: any = {
                 selector: {
@@ -144,7 +144,7 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-    public async QueryTransactionsByMember(ctx : Context, memberId : string) {
+    public async QueryTransactionsByMember(ctx : Context, memberId : string) : Promise<string> {
 		try {
             let queryString: any = {
                 selector: {
@@ -158,7 +158,7 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-	public async QueryTransactionsByProgram(ctx : Context, programId : number) {
+	public async QueryTransactionsByProgram(ctx : Context, programId : number) : Promise<string> {
 		try {
             let queryString: any = {
                 selector: {
@@ -172,7 +172,7 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-	public async QueryTransactionsByMerchantStore(ctx : Context, merchantStoreId : number) {
+	public async QueryTransactionsByMerchantStore(ctx : Context, merchantStoreId : number) : Promise<string>{
 		try {
             let queryString: any = {
                 selector: {
@@ -187,7 +187,7 @@ export class TransactionLedgerContract extends Contract {
 	}
 
     // GetTransactionHistory returns the chain of custody for an transaction since issuance.
-	async GetTransactionHistory(ctx : Context, transactionName) {
+	async GetTransactionHistory(ctx : Context, transactionName) : Promise<string>{
        try {
             return await CommonUtils.GetHistoryForKey(ctx, transactionName);
        } catch (error) {

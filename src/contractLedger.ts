@@ -14,7 +14,7 @@ import { ContractDetails } from './interface/ContractDetails';
 export class ContractLedgerContract extends Contract {
 
     // CreateContract issues a new contract to the world state with given details.
-    public async CreateContract(ctx: Context, contractDetails : string) {
+    public async CreateContract(ctx: Context, contractDetails : string) : Promise<string>{
         try {
             const parsedDetails : ContractDetails = JSON.parse(contractDetails);
             if(!parsedDetails.programId) throw new InvalidInputError("programId is required");
@@ -40,7 +40,7 @@ export class ContractLedgerContract extends Contract {
             };
             // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
             await ctx.stub.putState(contract.identifier, Buffer.from(stringify(sortKeysRecursive(contract))));
-            return contract;
+            return JSON.stringify(contract);
         } catch (error) {
             console.log(error);
         }
@@ -83,7 +83,7 @@ export class ContractLedgerContract extends Contract {
 	// and accepting a single query parameter (merchantID).
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
-	public async QueryContractsByMerchant(ctx : Context, merchantId : number) {
+	public async QueryContractsByMerchant(ctx : Context, merchantId : number) : Promise<string> {
 		try {
             let queryString: any = {
                 selector: {
@@ -97,7 +97,7 @@ export class ContractLedgerContract extends Contract {
         };
 	}
 
-	public async QueryContractsByProgramAndMerchant(ctx : Context, programId : number, merchantId : number) {
+	public async QueryContractsByProgramAndMerchant(ctx : Context, programId : number, merchantId : number) : Promise<string>{
 		try {
             let queryString: any = {
                 selector: {
@@ -112,7 +112,7 @@ export class ContractLedgerContract extends Contract {
         }
 	}
 
-    public async QueryContractsByProgram(ctx : Context, programId : number) {
+    public async QueryContractsByProgram(ctx : Context, programId : number) : Promise<string>{
 		try {
             let queryString: any = {
                 selector: {
@@ -126,7 +126,7 @@ export class ContractLedgerContract extends Contract {
 	}
 
     // GetContractHistory returns the chain of custody for an contract since issuance.
-	async GetContractHistory(ctx : Context, contractName) {
+	async GetContractHistory(ctx : Context, contractName) : Promise<string> {
         try {
             return await CommonUtils.GetHistoryForKey(ctx, contractName);
         } catch (error) {
