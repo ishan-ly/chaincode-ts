@@ -10,53 +10,53 @@ import { ContractLedgerContract } from './contractLedger';
 import { CommonUtils } from './utils/CommonUtils';
 import { InvalidInputError } from './errors/InvalidInputError';
 import { CustomError } from './errors/CustomError';
-
+import { TransactionDetails } from './interface/TransactionDetails';
 @Info({title: 'TransactionLedger', description: 'Smart contract for transaction done by a member of partner'})
 export class TransactionLedgerContract extends Contract {
 
     // CreateTransaction issues a new transaction to the world state with given details.
-    public async CreateTransaction(ctx: Context, transactionDetails : any): Promise<string> {
+    public async CreateTransaction(ctx: Context, transactionDetails : string): Promise<string> {
         try {
-            transactionDetails = JSON.parse(transactionDetails);
-            if(!transactionDetails.identifier) throw new InvalidInputError("identifier is required");
-            if(!transactionDetails.memberId) throw new InvalidInputError("memberId is required");
-            if(!transactionDetails.memberTier) throw new InvalidInputError("memberTier is required");
-            if(!transactionDetails.programId) throw new InvalidInputError("programId is required");
-            if(!transactionDetails.merchantId) throw new InvalidInputError("merchantId is required");
-            if(!transactionDetails.merchantStoreId) throw new InvalidInputError("merchantStoreId is required");
-            if(!transactionDetails.location) throw new InvalidInputError("location is required");
-            if(!transactionDetails.amount) throw new InvalidInputError("amount is required");
-            if(!transactionDetails.currency) throw new InvalidInputError("currency is required");
-            if(!transactionDetails.currencyToUsdRate) throw new InvalidInputError("currencyToUsdRate is required");
+            const parsedDetails : TransactionDetails = JSON.parse(transactionDetails);
+            if(!parsedDetails.identifier) throw new InvalidInputError("identifier is required");
+            if(!parsedDetails.memberId) throw new InvalidInputError("memberId is required");
+            if(!parsedDetails.memberTier) throw new InvalidInputError("memberTier is required");
+            if(!parsedDetails.programId) throw new InvalidInputError("programId is required");
+            if(!parsedDetails.merchantId) throw new InvalidInputError("merchantId is required");
+            if(!parsedDetails.merchantStoreId) throw new InvalidInputError("merchantStoreId is required");
+            if(!parsedDetails.location) throw new InvalidInputError("location is required");
+            if(!parsedDetails.amount) throw new InvalidInputError("amount is required");
+            if(!parsedDetails.currency) throw new InvalidInputError("currency is required");
+            if(!parsedDetails.currencyToUsdRate) throw new InvalidInputError("currencyToUsdRate is required");
     
-            const exists = await this.TransactionExists(ctx, transactionDetails.identifier);
+            const exists = await this.TransactionExists(ctx, parsedDetails.identifier);
             if (exists) {
-                throw new CustomError(`The transaction ${transactionDetails.identifier} already exists`);
+                throw new CustomError(`The transaction ${parsedDetails.identifier} already exists`);
             }
     
             const contractLedgerContract = new ContractLedgerContract();
-            const contracts = await contractLedgerContract.QueryContractsByProgramAndMerchant(ctx, transactionDetails.programId, transactionDetails.merchantId);
+            const contracts = await contractLedgerContract.QueryContractsByProgramAndMerchant(ctx, parsedDetails.programId, parsedDetails.merchantId);
             
-            if(!contracts) throw new CustomError(`NO contract between program ${transactionDetails.programId} and merchant ${transactionDetails.merchantId} exists`);
+            if(!contracts) throw new CustomError(`NO contract between program ${parsedDetails.programId} and merchant ${parsedDetails.merchantId} exists`);
             const parsedContracts = JSON.parse(contracts);
             const cpp = parsedContracts[0].cpp;
 
             if(cpp === 0) throw new CustomError("cpp cannot be 0");
-            const interimAmount = transactionDetails.amount * transactionDetails.currencyToUsdRate;
+            const interimAmount = parsedDetails.amount * parsedDetails.currencyToUsdRate;
             const pointToBeIncurred = interimAmount/cpp;
     
             const transaction = {
                 docType : 'transaction',
-                identifier : transactionDetails.identifier, 
-                memberId : transactionDetails.memberId,
-                memberTier : transactionDetails.memberTier,
-                programId : transactionDetails.programId,
-                merchantId : transactionDetails.merchantId,
-                merchantStoreId : transactionDetails.merchantStoreId,
-                location : transactionDetails.location,
-                amount : transactionDetails.amount,
-                currency : transactionDetails.currency,
-                currencyToUsdRate : transactionDetails.currencyToUsdRate,
+                identifier : parsedDetails.identifier, 
+                memberId : parsedDetails.memberId,
+                memberTier : parsedDetails.memberTier,
+                programId : parsedDetails.programId,
+                merchantId : parsedDetails.merchantId,
+                merchantStoreId : parsedDetails.merchantStoreId,
+                location : parsedDetails.location,
+                amount : parsedDetails.amount,
+                currency : parsedDetails.currency,
+                currencyToUsdRate : parsedDetails.currencyToUsdRate,
                 pointToBeIncurred : pointToBeIncurred.toFixed(2),
                 status : 'INITIALIZED'
             };
@@ -130,8 +130,9 @@ export class TransactionLedgerContract extends Contract {
 	// and accepting a single query parameter (merchantID).
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
-	public async QueryTransactionsByMerchant(ctx : Context, merchantId : number) : Promise<string> {
+	public async QueryTransactionsByMerchant(ctx : Context, merchantIdString : string) : Promise<string> {
 		try {
+            const merchantId = parseInt(merchantIdString);
             let queryString: any = {
                 selector: {
                     docType: 'transaction',
@@ -144,8 +145,9 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-    public async QueryTransactionsByMember(ctx : Context, memberId : string) : Promise<string> {
+    public async QueryTransactionsByMember(ctx : Context, memberIdString : string) : Promise<string> {
 		try {
+            const memberId = parseInt(memberIdString);
             let queryString: any = {
                 selector: {
                     docType: 'transaction',
@@ -158,8 +160,9 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-	public async QueryTransactionsByProgram(ctx : Context, programId : number) : Promise<string> {
+	public async QueryTransactionsByProgram(ctx : Context, programIdString : string) : Promise<string> {
 		try {
+            const programId = parseInt(programIdString);
             let queryString: any = {
                 selector: {
                     docType: 'transaction',
@@ -172,8 +175,9 @@ export class TransactionLedgerContract extends Contract {
         }
 	}
 
-	public async QueryTransactionsByMerchantStore(ctx : Context, merchantStoreId : number) : Promise<string>{
+	public async QueryTransactionsByMerchantStore(ctx : Context, merchantStoreIdString : string) : Promise<string>{
 		try {
+            const merchantStoreId = parseInt(merchantStoreIdString);
             let queryString: any = {
                 selector: {
                     docType: 'transaction',
@@ -187,7 +191,7 @@ export class TransactionLedgerContract extends Contract {
 	}
 
     // GetTransactionHistory returns the chain of custody for an transaction since issuance.
-	async GetTransactionHistory(ctx : Context, transactionName) : Promise<string>{
+	async GetTransactionHistory(ctx : Context, transactionName : string) : Promise<string>{
        try {
             return await CommonUtils.GetHistoryForKey(ctx, transactionName);
        } catch (error) {

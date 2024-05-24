@@ -83,8 +83,9 @@ export class ContractLedgerContract extends Contract {
 	// and accepting a single query parameter (merchantID).
 	// Only available on state databases that support rich query (e.g. CouchDB)
 	// Example: Parameterized rich query
-	public async QueryContractsByMerchant(ctx : Context, merchantId : number) : Promise<string> {
+	public async QueryContractsByMerchant(ctx : Context, merchantIdString : string) : Promise<string> {
 		try {
+            const merchantId = parseInt(merchantIdString);
             let queryString: any = {
                 selector: {
                     docType: 'contract',
@@ -112,8 +113,9 @@ export class ContractLedgerContract extends Contract {
         }
 	}
 
-    public async QueryContractsByProgram(ctx : Context, programId : number) : Promise<string>{
+    public async QueryContractsByProgram(ctx : Context, programIdString : string) : Promise<string>{
 		try {
+            const programId = parseInt(programIdString);
             let queryString: any = {
                 selector: {
                     docType: 'contract',
