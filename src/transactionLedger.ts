@@ -69,9 +69,7 @@ export class TransactionLedgerContract extends Contract {
             return JSON.stringify(transaction);
         } catch (error) {
             console.error(error); 
-            const customError = new CustomError(error.message);
-            console.log(customError);
-            throw customError;
+            throw new CustomError(error.message);
         }
     }
 
