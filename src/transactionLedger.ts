@@ -41,6 +41,8 @@ export class TransactionLedgerContract extends Contract {
             if(!contracts) throw new CustomError(`NO contract between program ${parsedDetails.programId} and merchant ${parsedDetails.merchantId} exists`);
             const parsedContracts = JSON.parse(contracts);
 
+            if(parsedContracts.length <= 0) throw new CustomError("No Contract found");
+
             const cpp = parsedContracts[0].Record.cpp;
             if(cpp === 0) throw new CustomError("cpp cannot be 0");
 
@@ -66,9 +68,10 @@ export class TransactionLedgerContract extends Contract {
             await ctx.stub.putState(transaction.identifier, Buffer.from(stringify(sortKeysRecursive(transaction))));
             return JSON.stringify(transaction);
         } catch (error) {
-            console.log(error); 
-            throw new CustomError(error.message);
-
+            console.error(error); 
+            const customError = new CustomError(error.message);
+            console.log(customError);
+            throw customError;
         }
     }
 
