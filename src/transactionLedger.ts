@@ -43,11 +43,11 @@ export class TransactionLedgerContract extends Contract {
 
             if(parsedContracts.length <= 0) throw new CustomError("No Contract found");
 
-            const cpp = parsedContracts[0].Record.cpp;
+            const cpp = parsedContracts[0].cpp;
             if(cpp === 0) throw new CustomError("cpp cannot be 0");
 
             const interimAmount = parsedDetails.amount * parsedDetails.currencyToUsdRate;
-            const pointToBeIncurred = interimAmount/cpp;
+            const pointToBeAccured = interimAmount/cpp;
 
             const transaction = {
                 docType : 'transaction',
@@ -61,7 +61,7 @@ export class TransactionLedgerContract extends Contract {
                 amount : parsedDetails.amount,
                 currency : parsedDetails.currency,
                 currencyToUsdRate : parsedDetails.currencyToUsdRate,
-                pointToBeIncurred : pointToBeIncurred.toFixed(2),
+                pointToBeAccured : pointToBeAccured.toFixed(2),
                 status : Status.INITIALIZED
             };
             // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'

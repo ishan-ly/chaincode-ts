@@ -43,7 +43,8 @@ export class CommonUtils {
 		let resultsIterator = await ctx.stub.getQueryResult(queryString);
 		let results = await this._GetAllResults(resultsIterator, false);
 
-		return JSON.stringify(results);
+		let records = results.map((result) => ({...result.Record}));
+		return JSON.stringify(records);
 	}
 
     // GetContractHistory returns the chain of custody for an contract since issuance.
