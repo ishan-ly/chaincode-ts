@@ -5,6 +5,9 @@ This repo contains source code of loyyal chaincode of contract and transaction i
 
 ```
 aws ecr get-login-password --region me-south-1 | docker login --username AWS --password-stdin 827830277284.dkr.ecr.me-south-1.amazonaws.com
+OR
+sudo docker login -u AWS -p $(aws ecr get-login-password --region me-south-1) 827830277284.dkr.ecr.me-south-1.amazonaws.com
+
 docker build -t 827830277284.dkr.ecr.me-south-1.amazonaws.com/chaintest02:v1.0 .
 docker push 827830277284.dkr.ecr.me-south-1.amazonaws.com/chaintest02:v1.0
 ```
