@@ -1,36 +1,34 @@
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-FROM node:16 AS builder
+# STAGE 1 - build the react app 
+# set the base image to build from 
+# This is the application image from which all other subsequent 
+# applications run. Alpine Linux is a security-oriented, lightweight 
+#(~5Mb) Linux distribution.
+FROM node:alpine as build
 
-WORKDIR /usr/src/app
+# set working directory
+# this is the working folder in the container from which the app
+# will be running from
+WORKDIR /app
 
-# Copy node.js source and build, changing owner as well
-COPY --chown=node:node . /usr/src/app
-ENV npm_config_cache=/usr/src/app
-RUN npm ci && npm run package
+# add the node_modules folder to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
+# copy package.json file to /app directory for installation prep
+COPY ./package.json /app/
 
-FROM node:16 AS production
-ARG CC_SERVER_PORT
+# install dependencies
+RUN npm install
 
-# Setup tini to work better handle signals
-ENV TINI_VERSION v0.19.0
-ENV PLATFORM=amd64
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${PLATFORM} /tini
-RUN chmod +x /tini
+# copy everything to /app directory
+COPY . /app
 
-WORKDIR /usr/src/app
-COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
-COPY --chown=node:node --from=builder /usr/src/app/package.json ./
-COPY --chown=node:node --from=builder /usr/src/app/npm-shrinkwrap.json ./
-COPY --chown=node:node docker/docker-entrypoint.sh /usr/src/app/docker-entrypoint.sh
+# build the app 
+RUN npm run build
 
-RUN npm ci --omit=dev && npm cache clean --force
+# Expose port 80 for HTTP Traffic 
+EXPOSE 3000
 
-ENV PORT $CC_SERVER_PORT
-EXPOSE $CC_SERVER_PORT
-ENV NODE_ENV=production
+# start the nginx web server
 
-USER node
-ENTRYPOINT [ "/tini", "--", "/usr/src/app/docker-entrypoint.sh" ]
+CMD ["node", "/app/dist/index.js"]
+
