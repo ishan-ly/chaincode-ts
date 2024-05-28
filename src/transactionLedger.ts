@@ -11,6 +11,7 @@ import { CommonUtils } from './utils/CommonUtils';
 import { InvalidInputError } from './errors/InvalidInputError';
 import { CustomError } from './errors/CustomError';
 import { TransactionDetails } from './interface/TransactionDetails';
+import { Status } from './enums/Status';
 @Info({title: 'TransactionLedger', description: 'Smart contract for transaction done by a member of partner'})
 export class TransactionLedgerContract extends Contract {
 
@@ -39,20 +40,12 @@ export class TransactionLedgerContract extends Contract {
             
             if(!contracts) throw new CustomError(`NO contract between program ${parsedDetails.programId} and merchant ${parsedDetails.merchantId} exists`);
             const parsedContracts = JSON.parse(contracts);
-            console.log('parsed contracts are ',parsedContracts);
 
             const cpp = parsedContracts[0].Record.cpp;
-            console.log('cpp is ',cpp);
-
             if(cpp === 0) throw new CustomError("cpp cannot be 0");
-            console.log('parsedDetails.amount ', parsedDetails.amount);
 
-            console.log('parsedDetails.currencyToUsdRate ', parsedDetails.currencyToUsdRate)
             const interimAmount = parsedDetails.amount * parsedDetails.currencyToUsdRate;
-            console.log('interimAmount is ', interimAmount)
-
             const pointToBeIncurred = interimAmount/cpp;
-            console.log('pointToBeIncurred is ', pointToBeIncurred);
 
             const transaction = {
                 docType : 'transaction',
@@ -67,13 +60,15 @@ export class TransactionLedgerContract extends Contract {
                 currency : parsedDetails.currency,
                 currencyToUsdRate : parsedDetails.currencyToUsdRate,
                 pointToBeIncurred : pointToBeIncurred.toFixed(2),
-                status : 'INITIALIZED'
+                status : Status.INITIALIZED
             };
             // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
             await ctx.stub.putState(transaction.identifier, Buffer.from(stringify(sortKeysRecursive(transaction))));
             return JSON.stringify(transaction);
         } catch (error) {
-            console.log(error);
+            console.log(error); 
+            throw new CustomError(error.message);
+
         }
     }
 
@@ -90,7 +85,7 @@ export class TransactionLedgerContract extends Contract {
             const transaction = JSON.parse(transactionBytes.toString());
     
             // Update the status field
-            transaction.status = status;
+            transaction.status = parseInt(status);
     
             // Update the ledger state with the new transaction data
             await ctx.stub.putState(identifier, Buffer.from(stringify(sortKeysRecursive(transaction))));
@@ -99,6 +94,7 @@ export class TransactionLedgerContract extends Contract {
             return JSON.stringify(transaction);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
     }
 
@@ -112,6 +108,7 @@ export class TransactionLedgerContract extends Contract {
             return transactionJSON.toString();
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
     }
 
@@ -122,6 +119,8 @@ export class TransactionLedgerContract extends Contract {
             return assetJSON && assetJSON.length > 0;
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
+
         }
     }
 
@@ -131,6 +130,8 @@ export class TransactionLedgerContract extends Contract {
             return await CommonUtils.GetAllData(ctx, type); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
+
         }
     }
 
@@ -151,6 +152,7 @@ export class TransactionLedgerContract extends Contract {
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
 	}
 
@@ -166,6 +168,7 @@ export class TransactionLedgerContract extends Contract {
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
 	}
 
@@ -181,6 +184,8 @@ export class TransactionLedgerContract extends Contract {
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
+
         }
 	}
 
@@ -196,6 +201,8 @@ export class TransactionLedgerContract extends Contract {
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
+
         }
 	}
 
@@ -205,6 +212,7 @@ export class TransactionLedgerContract extends Contract {
             return await CommonUtils.GetHistoryForKey(ctx, transactionName);
        } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
        }
 	}
 }

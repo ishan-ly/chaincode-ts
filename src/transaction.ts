@@ -3,7 +3,7 @@
 */
 
 import {Object, Property} from 'fabric-contract-api';
-
+import { Status } from './enums/Status';
 @Object()
 export class MemberTransaction {
     @Property()
@@ -37,7 +37,7 @@ export class MemberTransaction {
     public currency: string;
 
     @Property()
-    public status: string; //['INITIALIZED','ACCURED','FAILED']
+    public status: Status; //enum ['INITIALIZED','ACCURED','FAILED']
 
     @Property()
     public currencyToUsdRate : number;

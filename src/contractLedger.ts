@@ -43,6 +43,7 @@ export class ContractLedgerContract extends Contract {
             return JSON.stringify(contract);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
     }   
 
@@ -56,6 +57,7 @@ export class ContractLedgerContract extends Contract {
             return contractJSON.toString();
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
     }
 
@@ -66,6 +68,7 @@ export class ContractLedgerContract extends Contract {
             return assetJSON && assetJSON.length > 0;
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
     }
 
@@ -75,6 +78,8 @@ export class ContractLedgerContract extends Contract {
             return await CommonUtils.GetAllData(ctx, type); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
+
         }
     }
 
@@ -95,6 +100,7 @@ export class ContractLedgerContract extends Contract {
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults)
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         };
 	}
 
@@ -110,6 +116,7 @@ export class ContractLedgerContract extends Contract {
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
 	}
 
@@ -124,6 +131,7 @@ export class ContractLedgerContract extends Contract {
             return await CommonUtils.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
         }
 	}
 
@@ -133,6 +141,8 @@ export class ContractLedgerContract extends Contract {
             return await CommonUtils.GetHistoryForKey(ctx, contractName);
         } catch (error) {
             console.log(error);
+            throw new CustomError(error.message);
+
         }
 	}
 }
